@@ -1,0 +1,63 @@
+{
+  "gate_tests": [
+    "test_outputs.py::test_weighted_estimate_matches_manual_calculation",
+    "test_outputs.py::test_block_count_uses_grid_coordinates",
+    "test_outputs.py::test_top_keys_are_exact",
+    "test_outputs.py::test_point_keys_are_exact",
+    "test_outputs.py::test_duplicate_json_key_is_refused",
+    "test_outputs.py::test_fewer_than_twelve_points_are_refused"
+  ],
+  "schema_version": 1,
+  "tests": {
+    "test_outputs.py::test_absent_parent_is_io_failure": {
+      "priority": "recovery",
+      "rationale": "absent parent is io failure；这验证失败、重跑或恢复不变量，失败会造成旧数据和台账不一致。",
+      "weight": 0.079
+    },
+    "test_outputs.py::test_boolean_replicates_is_refused": {
+      "priority": "boundary",
+      "rationale": "boolean replicates is refused；这验证公开边界和拒收口径，失败会产生越界输入或错误放行。",
+      "weight": 0.059
+    },
+    "test_outputs.py::test_compact_output_key_order": {
+      "priority": "core",
+      "rationale": "compact output key order；这是任务的主交付路径，失败意味着核心业务结果不可用。",
+      "weight": 0.3
+    },
+    "test_outputs.py::test_confidence_bounds_are_enforced": {
+      "priority": "supporting",
+      "rationale": "confidence bounds are enforced；这补充验证外围业务约束，失败会降低交付完整性和可运维性。",
+      "weight": 0.033
+    },
+    "test_outputs.py::test_duplicate_plot_id_is_refused": {
+      "priority": "boundary",
+      "rationale": "duplicate plot id is refused；这验证公开边界和拒收口径，失败会产生越界输入或错误放行。",
+      "weight": 0.059
+    },
+    "test_outputs.py::test_interval_brackets_estimate": {
+      "priority": "core",
+      "rationale": "interval brackets estimate；这是任务的主交付路径，失败意味着核心业务结果不可用。",
+      "weight": 0.3
+    },
+    "test_outputs.py::test_repeat_is_byte_identical": {
+      "priority": "recovery",
+      "rationale": "repeat is byte identical；这验证失败、重跑或恢复不变量，失败会造成旧数据和台账不一致。",
+      "weight": 0.078
+    },
+    "test_outputs.py::test_success_is_quiet": {
+      "priority": "supporting",
+      "rationale": "success is quiet；这补充验证外围业务约束，失败会降低交付完整性和可运维性。",
+      "weight": 0.033
+    },
+    "test_outputs.py::test_weight_range_is_enforced": {
+      "priority": "boundary",
+      "rationale": "weight range is enforced；这验证公开边界和拒收口径，失败会产生越界输入或错误放行。",
+      "weight": 0.059
+    }
+  },
+  "weight_policy": {
+    "basis": "business_priority",
+    "core_min_share": 0.5,
+    "version": 1
+  }
+}
