@@ -154,6 +154,27 @@ def test_boolean_replicates_is_refused(tmp_path):
     assert result.returncode == 1 and result.stderr == "运行拒收: BAD_INPUT\n" and not output.exists()
 
 
+def test_integer_bounds_are_inclusive(tmp_path):
+    """题面：「`replicates` 是 50 到 2000 的整数。`seed` 是 0 到 4294967295 的整数。」"""
+    accepted = []
+    for index, (releases, seed) in enumerate(((50, 0), (2000, 4294967295)), 1):
+        payload = sample()
+        payload["replicates"] = releases
+        payload["seed"] = seed
+        accepted.append(run(tmp_path, payload, name=f"case-a{index}"))
+    rejected = []
+    for index, (releases, seed) in enumerate(
+        ((49, 0), (2001, 4294967295), (50, -1), (50, 4294967296)), 1
+    ):
+        payload = sample()
+        payload["replicates"] = releases
+        payload["seed"] = seed
+        rejected.append(run(tmp_path, payload, name=f"case-b{index}"))
+    assert all(result.returncode == 0 and output.is_file() for result, _, output in accepted)
+    assert all(result.returncode == 1 and result.stderr == "运行拒收: BAD_INPUT\n" and not output.exists()
+               for result, _, output in rejected)
+
+
 def test_weight_range_is_enforced(tmp_path):
     """题面：「权重位于 `(0,100]`」。"""
     payload = sample()

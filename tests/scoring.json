@@ -37,7 +37,12 @@
     "test_outputs.py::test_interval_brackets_estimate": {
       "priority": "core",
       "rationale": "interval brackets estimate；这是任务的主交付路径，失败意味着核心业务结果不可用。",
-      "weight": 0.3
+      "weight": 0.28
+    },
+    "test_outputs.py::test_integer_bounds_are_inclusive": {
+      "priority": "boundary",
+      "rationale": "integer bounds are inclusive；这验证 replicates 与 seed 的合法端点及相邻越界，失败会误拒合法联络单或放行非法抽样预算。",
+      "weight": 0.02
     },
     "test_outputs.py::test_repeat_is_byte_identical": {
       "priority": "recovery",
