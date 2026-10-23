@@ -22,7 +22,7 @@
     "test_outputs.py::test_compact_output_key_order": {
       "priority": "core",
       "rationale": "compact output key order；这是任务的主交付路径，失败意味着核心业务结果不可用。",
-      "weight": 0.3
+      "weight": 0.27
     },
     "test_outputs.py::test_confidence_bounds_are_enforced": {
       "priority": "supporting",
@@ -53,6 +53,16 @@
       "priority": "supporting",
       "rationale": "success is quiet；这补充验证外围业务约束，失败会降低交付完整性和可运维性。",
       "weight": 0.033
+    },
+    "test_outputs.py::test_study_id_boundaries_and_rejections": {
+      "priority": "boundary",
+      "rationale": "study id boundaries and rejections；这验证公开命名边界、Unicode 空白和控制字符拒收，失败会误收不合格研究标识。",
+      "weight": 0.02
+    },
+    "test_outputs.py::test_unweighted_estimate_is_refused": {
+      "priority": "boundary",
+      "rationale": "unweighted estimate is refused；这验证派生均值必须按样点权重聚合，失败会得到错误的区域覆盖率。",
+      "weight": 0.01
     },
     "test_outputs.py::test_weight_range_is_enforced": {
       "priority": "boundary",

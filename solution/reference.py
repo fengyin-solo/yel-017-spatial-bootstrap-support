@@ -9,6 +9,7 @@ import os
 import re
 import sys
 import tempfile
+import unicodedata
 from pathlib import Path
 
 
@@ -51,8 +52,7 @@ def validate(payload):
     if (
         not isinstance(study_id, str)
         or not 2 <= len(study_id) <= 48
-        or study_id != study_id.strip()
-        or any(ord(char) < 32 or ord(char) == 127 for char in study_id)
+        or any(char.isspace() or unicodedata.category(char).startswith("C") for char in study_id)
     ):
         raise Refusal("BAD_INPUT")
     points = payload["points"]

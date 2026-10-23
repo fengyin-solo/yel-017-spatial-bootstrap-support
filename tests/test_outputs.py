@@ -72,6 +72,19 @@ def test_weighted_estimate_matches_manual_calculation(tmp_path):
     assert result.returncode == 0 and read(output)["estimate"] == pytest.approx(expected)
 
 
+def test_unweighted_estimate_is_refused(tmp_path):
+    """题面：「点估计是权重加权的覆盖率」，不能退化为样点覆盖率算术平均。"""
+    payload = sample()
+    unweighted = sum(item["coverage"] for item in payload["points"]) / len(payload["points"])
+    weighted = sum(item["weight"] * item["coverage"] for item in payload["points"]) / sum(
+        item["weight"] for item in payload["points"]
+    )
+    result, _, output = run(tmp_path, payload)
+    estimate = read(output)["estimate"]
+    assert result.returncode == 0
+    assert estimate == pytest.approx(weighted) and estimate != pytest.approx(unweighted)
+
+
 def test_block_count_uses_grid_coordinates(tmp_path):
     """题面：「每个点属于块坐标 `(floor(x_km/block_size_km), floor(y_km/block_size_km))`。」"""
     payload = sample()
@@ -110,6 +123,24 @@ def test_top_keys_are_exact(tmp_path):
     payload["operator"] = "night"
     result, _, output = run(tmp_path, payload)
     assert result.returncode == 1 and result.stderr == "运行拒收: BAD_INPUT\n" and not output.exists()
+
+
+def test_study_id_boundaries_and_rejections(tmp_path):
+    """题面：「`study_id` 的字符范围是 2 到 48；空白和控制字符都不允许。」"""
+    accepted = []
+    for index, study_id in enumerate(("AB", "A" * 48), 1):
+        payload = sample()
+        payload["study_id"] = study_id
+        accepted.append(run(tmp_path, payload, name=f"study-a{index}"))
+    rejected = []
+    invalid_ids = ("A", "A" * 49, "A B", "A\u00a0B", "A\u200bB", "A\u0000B")
+    for index, study_id in enumerate(invalid_ids, 1):
+        payload = sample()
+        payload["study_id"] = study_id
+        rejected.append(run(tmp_path, payload, name=f"study-b{index}"))
+    assert all(result.returncode == 0 and output.is_file() for result, _, output in accepted)
+    assert all(result.returncode == 1 and result.stderr == "运行拒收: BAD_INPUT\n" and not output.exists()
+               for result, _, output in rejected)
 
 
 def test_point_keys_are_exact(tmp_path):
